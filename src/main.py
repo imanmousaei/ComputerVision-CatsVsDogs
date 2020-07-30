@@ -1,3 +1,4 @@
 import os
 
-os.chdir('../res')
+os.chdir('../res/dogs_vs_cats')  # changes directory
+
