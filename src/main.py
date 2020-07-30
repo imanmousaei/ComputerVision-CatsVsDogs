@@ -32,9 +32,9 @@ for image in random.sample(glob.glob('dog*'), 50):
     shutil.move(image, '../test/dog')
 '''
 
-train_path = 'res/dogs-vs-cats/train'
-validation_path = 'res/dogs-vs-cats/validation'
-test_path = 'res/dogs-vs-cats/test'
+train_path = '../res/dogs-vs-cats/train'
+validation_path = '../res/dogs-vs-cats/validation'
+test_path = '../res/dogs-vs-cats/test'
 
 train_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.vgg16.preprocess_input) \
     .flow_from_directory(directory=train_path, target_size=(224, 224), classes=['cat', 'dog'], batch_size=10)
