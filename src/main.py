@@ -88,3 +88,6 @@ CNN_model.fit(
     verbose=2
 )
 
+print('train finished')
+
+# 100/100 - 50s - loss: 0.0017 - accuracy: 1.0000 - val_loss: 2.0729 - val_accuracy: 0.6650 -> overfit
