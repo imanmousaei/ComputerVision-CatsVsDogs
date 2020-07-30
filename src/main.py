@@ -6,6 +6,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.layers import Activation, Dense, Flatten, BatchNormalization, Conv2D, MaxPool2D
+from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -76,3 +77,14 @@ CNN_model = Sequential([
     Flatten(),
     Dense(units=2, activation='softmax')
 ])
+
+# or binary_crossentropy(one node in output layer e.g. 0:cat,1:dog ) & last activation='sigmoid'
+CNN_model.compile(optimizer=Adam(learning_rate=0.0001), loss='categorical_crossentropy', metrics=['accuracy'])
+
+CNN_model.fit(
+    x=train_batches,  # no need for y, because the generator contains the labels
+    validation_data=validation_batches,
+    epochs=10,
+    verbose=2
+)
+
