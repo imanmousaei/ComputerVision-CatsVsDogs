@@ -7,8 +7,8 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.layers import Activation, Dense, Flatten, BatchNormalization, Conv2D, MaxPool2D
 from tensorflow.keras.optimizers import Adam
+from keras.layers import Dropout
 import matplotlib.pyplot as plt
-
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.models import Sequential
 
@@ -70,11 +70,10 @@ print(labels)  # probability:[cat,dog] i.e. [1. 0.]=cat, [0. 1.]=dog
 CNN_model = Sequential([
     # padding='same' : no padding , input shape 3 : color channels (RGB in our case)
     # 2nd layer in CNN(ergo needs shape of input layer) :
-    Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same', input_shape=(224, 224, 3)),
-    MaxPool2D(pool_size=(2, 2), strides=2),
-    Conv2D(filters=32, kernel_size=(3, 3), activation='relu', padding='same'),
+    Conv2D(filters=32, kernel_size=(3, 3), activation='sigmoid', padding='same', input_shape=(224, 224, 3)),
     MaxPool2D(pool_size=(2, 2), strides=2),
     Flatten(),
+    Dropout(0.5),  # dropout to avoid overfitting
     Dense(units=2, activation='softmax')
 ])
 
@@ -88,6 +87,5 @@ CNN_model.fit(
     verbose=2
 )
 
-print('train finished')
+print('training finished')
 
-# 100/100 - 50s - loss: 0.0017 - accuracy: 1.0000 - val_loss: 2.0729 - val_accuracy: 0.6650 -> overfit
