@@ -63,7 +63,7 @@ def plot_images(images_arr):
     plt.tight_layout()
     plt.show()
 
-
+'''
 plot_images(images)  # cuz of the preprocessing_function vgg16, colors are a little fucked up
 print(labels)  # probability:[cat,dog] i.e. [1. 0.]=cat, [0. 1.]=dog
 
@@ -71,6 +71,8 @@ CNN_model = Sequential([
     # padding='same' : no padding , input shape 3 : color channels (RGB in our case)
     # 2nd layer in CNN(ergo needs shape of input layer) :
     Conv2D(filters=32, kernel_size=(3, 3), activation='sigmoid', padding='same', input_shape=(224, 224, 3)),
+    MaxPool2D(pool_size=(2, 2), strides=2),
+    Conv2D(filters=32, kernel_size=(3, 3), activation='sigmoid', padding='same'),
     MaxPool2D(pool_size=(2, 2), strides=2),
     Flatten(),
     Dropout(0.5),  # dropout to avoid overfitting
@@ -80,12 +82,20 @@ CNN_model = Sequential([
 # or binary_crossentropy(one node in output layer e.g. 0:cat,1:dog ) & last activation='sigmoid'
 CNN_model.compile(optimizer=Adam(learning_rate=0.0001), loss='categorical_crossentropy', metrics=['accuracy'])
 
+
 CNN_model.fit(
     x=train_batches,  # no need for y, because the generator contains the labels
     validation_data=validation_batches,
-    epochs=10,
+    epochs=20,
     verbose=2
 )
-
 print('training finished')
+'''
+
+
+vgg16_model = tf.keras.applications.vgg16.VGG16() # importing a pre-trained CNN
+vgg16_model.summary()
+
+
+
 
