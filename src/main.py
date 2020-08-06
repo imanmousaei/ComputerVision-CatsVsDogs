@@ -4,6 +4,7 @@ import glob
 import shutil
 import numpy as np
 import tensorflow as tf
+from keras.utils.layer_utils import count_params
 from tensorflow import keras
 from tensorflow.keras.layers import Activation, Dense, Flatten, BatchNormalization, Conv2D, MaxPool2D
 from tensorflow.keras.optimizers import Adam
@@ -68,6 +69,7 @@ CNN_model.add(Dense(units=2, activation='softmax'))
 
 CNN_model.summary()
 
+
 # or binary_crossentropy(one node in output layer e.g. 0:cat,1:dog ) & last activation='sigmoid'
 CNN_model.compile(optimizer=Adam(learning_rate=0.0001), loss='categorical_crossentropy', metrics=['accuracy'])
 
@@ -77,4 +79,15 @@ CNN_model.fit(
     epochs=5,
     verbose=2
 )
+
 print('training finished')
+
+
+# Epoch 5/5 : 100/100 - 434s - loss: 0.0450 - accuracy: 0.9900 - val_loss: 0.0555 - val_accuracy: 0.9700
+
+# print(count_params(CNN_model)['non_trainable_params'])
+# print(count_params(CNN_model)['trainable_params'])
+
+predict = CNN_model.predict(test_batches)
+print(predict)
+
