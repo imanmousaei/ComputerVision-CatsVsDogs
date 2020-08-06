@@ -11,6 +11,7 @@ from keras.layers import Dropout
 import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.models import Sequential
+from keras.applications.vgg16 import VGG16
 
 '''
 os.chdir('../res/dogs-vs-cats/train')  # changes directory
@@ -50,52 +51,30 @@ test_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.v
     .flow_from_directory(directory=test_path, target_size=(224, 224), classes=['cat', 'dog'], batch_size=10,
                          shuffle=False)
 
-images, labels = next(train_batches)
+# probability:[cat,dog] i.e. [1. 0.]=cat, [0. 1.]=dog
 
 
-# This function will plot images in the form of a grid with 1 row and 5 columns where images are placed in each column.
-def plot_images(images_arr):
-    fig, axes = plt.subplots(1, 5, figsize=(20, 20))
-    axes = axes.flatten()
-    for img, ax in zip(images_arr, axes):
-        ax.imshow(img)
-        ax.axis('off')
-    plt.tight_layout()
-    plt.show()
+vgg16_model = VGG16()  # importing a pre-trained CNN
+# vgg16_model.summary()
 
-'''
-plot_images(images)  # cuz of the preprocessing_function vgg16, colors are a little fucked up
-print(labels)  # probability:[cat,dog] i.e. [1. 0.]=cat, [0. 1.]=dog
+CNN_model = Sequential()
 
-CNN_model = Sequential([
-    # padding='same' : no padding , input shape 3 : color channels (RGB in our case)
-    # 2nd layer in CNN(ergo needs shape of input layer) :
-    Conv2D(filters=32, kernel_size=(3, 3), activation='sigmoid', padding='same', input_shape=(224, 224, 3)),
-    MaxPool2D(pool_size=(2, 2), strides=2),
-    Conv2D(filters=32, kernel_size=(3, 3), activation='sigmoid', padding='same'),
-    MaxPool2D(pool_size=(2, 2), strides=2),
-    Flatten(),
-    Dropout(0.5),  # dropout to avoid overfitting
-    Dense(units=2, activation='softmax')
-])
+for layer in vgg16_model.layers[:-1]:
+    CNN_model.add(layer)
+
+for layer in CNN_model.layers:
+    layer.trainable = False
+CNN_model.add(Dense(units=2, activation='softmax'))
+
+CNN_model.summary()
 
 # or binary_crossentropy(one node in output layer e.g. 0:cat,1:dog ) & last activation='sigmoid'
 CNN_model.compile(optimizer=Adam(learning_rate=0.0001), loss='categorical_crossentropy', metrics=['accuracy'])
 
-
 CNN_model.fit(
     x=train_batches,  # no need for y, because the generator contains the labels
     validation_data=validation_batches,
-    epochs=20,
+    epochs=5,
     verbose=2
 )
 print('training finished')
-'''
-
-
-vgg16_model = tf.keras.applications.vgg16.VGG16() # importing a pre-trained CNN
-vgg16_model.summary()
-
-
-
-
